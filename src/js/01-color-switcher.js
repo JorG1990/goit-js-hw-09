@@ -18,9 +18,10 @@ document.addEventListener("DOMContentLoaded", function() {
   }
 
   function stopColorSwitch() {
+    clearInterval(intervalId);
     startButton.disabled = false;
     stopButton.disabled = true;
-    clearInterval(intervalId);
+
   }
 
   startButton.addEventListener("click", startColorSwitch);
