@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", function() {
   function startColorSwitch() {
     startButton.disabled = true;
     stopButton.disabled = false;
-    intervalId = setInterval(function() {
+    intervalId = setInterval(() => {
       body.style.backgroundColor = getRandomHexColor();
     }, 1000);
   }
