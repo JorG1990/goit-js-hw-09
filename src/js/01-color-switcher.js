@@ -12,16 +12,15 @@ document.addEventListener("DOMContentLoaded", function() {
   function startColorSwitch() {
     startButton.disabled = true;
     stopButton.disabled = false;
-    intervalId = setInterval(() => {
+    intervalId = setInterval(function() {
       body.style.backgroundColor = getRandomHexColor();
     }, 1000);
   }
 
   function stopColorSwitch() {
-    clearInterval(intervalId);
     startButton.disabled = false;
     stopButton.disabled = true;
-
+    return clearInterval(intervalId);
   }
 
   startButton.addEventListener("click", startColorSwitch);
