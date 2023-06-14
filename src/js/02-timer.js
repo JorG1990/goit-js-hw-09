@@ -4,13 +4,34 @@ import "flatpickr/dist/flatpickr.min.css";
 
 import Notiflix from 'notiflix';
 
+
+const datetimePicker = document.getElementById("datetime-picker");
+const startButton = document.querySelector("[data-start]");
+const daysElement = document.querySelector("[data-days]");
+const hoursElement = document.querySelector("[data-hours]");
+const minutesElement = document.querySelector("[data-minutes]");
+const secondsElement = document.querySelector("[data-seconds]");
+let intervalId = null;
+let fechaFinal = null;
+
+startButton.disabled = true;
+
 const options = {
   enableTime: true,
   time_24hr: true,
   defaultDate: new Date(),
   minuteIncrement: 1,
   onClose(selectedDates) {
-    console.log(selectedDates[0]);
+    const selectedDate = selectedDates[0];
+    const currentDate = new Date();
+
+    if (selectedDate <= currentDate) {
+      window.alert("Please choose a date in the future");
+      startButton.disabled = true;
+    } else {
+      startButton.disabled = false;
+      fechaFinal = selectedDate
+    }
   },
 };
 
@@ -22,17 +43,36 @@ function convertMs(ms) {
   const day = hour * 24;
 
   // Remaining days
-  const days = Math.floor(ms / day);
+  daysElement.innerText = Math.floor(ms / day);
   // Remaining hours
-  const hours = Math.floor((ms % day) / hour);
+  hoursElement.innerText = Math.floor((ms % day) / hour);
   // Remaining minutes
-  const minutes = Math.floor(((ms % day) % hour) / minute);
+  minutesElement.innerText = Math.floor(((ms % day) % hour) / minute);
   // Remaining seconds
-  const seconds = Math.floor((((ms % day) % hour) % minute) / second);
+  secondsElement.innerText = Math.floor((((ms % day) % hour) % minute) / second);
 
-  return { days, hours, minutes, seconds };
+
 }
 
-console.log(convertMs(2000)); // {days: 0, hours: 0, minutes: 0, seconds: 2}
-console.log(convertMs(140000)); // {days: 0, hours: 0, minutes: 2, seconds: 20}
-console.log(convertMs(24140000)); // {days: 0, hours: 6 minutes: 42, seconds: 20}
+
+// Function to add leading zero if the value has less than two characters
+function addLeadingZero(value) {
+  return value.toString().padStart(2, "0");
+}
+
+
+flatpickr(datetimePicker, options);
+
+// Event listener for the start button
+startButton.addEventListener("click", () => {
+  // const selectedDate = flatpickrInstance.selectedDate[0]
+
+  intervalId = setInterval(function() {
+    let fechaActual = new Date ()
+    let diferencia = fechaFinal - fechaActual
+    convertMs(diferencia);
+  }, 1000);
+
+
+});
+
