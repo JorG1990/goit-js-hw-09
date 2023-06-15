@@ -26,14 +26,18 @@ const options = {
     const currentDate = new Date();
 
     if (selectedDate <= currentDate) {
-      window.alert("Please choose a date in the future");
-      startButton.disabled = true;
+      Notiflix.Notify.failure("Please choose a date in the future");
+      // startButton.disabled = true;
     } else {
       startButton.disabled = false;
       fechaFinal = selectedDate
+
+
     }
   },
 };
+
+flatpickr(datetimePicker, options);
 
 function convertMs(ms) {
   // Number of milliseconds per unit of time
@@ -43,36 +47,44 @@ function convertMs(ms) {
   const day = hour * 24;
 
   // Remaining days
-  daysElement.innerText = Math.floor(ms / day);
+  const days = Math.floor(ms / day);
   // Remaining hours
-  hoursElement.innerText = Math.floor((ms % day) / hour);
+  const hours= Math.floor((ms % day) / hour);
   // Remaining minutes
-  minutesElement.innerText = Math.floor(((ms % day) % hour) / minute);
+  const minutes = Math.floor(((ms % day) % hour) / minute);
   // Remaining seconds
-  secondsElement.innerText = Math.floor((((ms % day) % hour) % minute) / second);
+  const seconds = Math.floor((((ms % day) % hour) % minute) / second);
 
-
+  return { days, hours, minutes, seconds };
 }
 
 
-// Function to add leading zero if the value has less than two characters
-function addLeadingZero(value) {
-  return value.toString().padStart(2, "0");
-}
-
-
-flatpickr(datetimePicker, options);
-
-// Event listener for the start button
 startButton.addEventListener("click", () => {
-  // const selectedDate = flatpickrInstance.selectedDate[0]
-
+  startButton.disabled = true;
   intervalId = setInterval(function() {
     let fechaActual = new Date ()
     let diferencia = fechaFinal - fechaActual
-    convertMs(diferencia);
+    let objDiference = convertMs(diferencia);
+    if (objDiference.days < 0 && objDiference.hours < 0 &&
+        objDiference.minutes < 0 && objDiference.seconds < 0) {
+          daysElement.textContent = "00";
+          hoursElement.textContent = "00";
+          minutesElement.textContent = "00";
+          secondsElement.textContent = "00";
+      clearInterval(intervalId);
+  } else {
+      const addLeadingZero = (value) => {
+          return value.toString().padStart(2, '0');
+      };
+      daysElement.textContent = addLeadingZero(objDiference.days);
+      hoursElement.textContent = addLeadingZero(objDiference.hours);
+      minutesElement.textContent = addLeadingZero(objDiference.minutes);
+      secondsElement.textContent = addLeadingZero(objDiference.seconds);
+  }
   }, 1000);
-
-
 });
+
+
+
+
 
